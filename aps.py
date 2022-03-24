@@ -1,88 +1,103 @@
+#imports
 import os
-os.system("cls")
+import os.path as Path
 import json
-def exibirMenu():
-    print("1 - Cadastro")
-    print("2 - Excluir Cadastro")
-    print("3 - Verificar Cadastro")
-    print("4 - Sair")
-    opcao = input("Ecolha uma opcao:")
-    return opcao
-def inserircadastro():
-    nome = input("Nome: ")
-    if nome in data:
+
+#functions
+def exibirMenu() -> None:
+    print("""
+1 - Cadastro
+2 - Excluir Cadastro
+3 - Verificar Cadastro
+4 - Sair
+""")
+
+def inserircadastro() -> None:
+    name = input("Nome: ")
+
+    if name in data:
         print("Cadastro já existe")
     else:
-        data[nome] = []
-        data[nome].append({
-            'idade' : input("digite sua idade: "),
-            'cidade' : input("cidade aonde mora: "),
-            'rua' : input("Rua onde mora: "),
-            'numero' : input("numero da casa: "),
-            'cep' : input("digite seu cep: "),
-            'sexo' : input("digite seu sexo: "),
-            'Email' : input("digite seu Email: "),
-            'Cpf' : input("digite seu Cpf: "),
-            'Estado' : input("Estado aonde mora: "),
-         }) 
-        brea = input()  
-def verificarcadastro():
-    i = len(data)
-    if i != 0:
+        data[name] = []
+        data[name].append({
+            'idade': input("Digite sua idade: "),
+            'cidade': input("Cidade onde mora: "),
+            'rua': input("Rua onde mora: "),
+            'numero': input("Número da casa: "),
+            'cep': input("Digite seu CEP: "),
+            'sexo': input("Digite seu sexo: "),
+            'email': input("Digite seu Email: "),
+            'cpf': input("Digite seu CPF: "),
+            'estado': input("Estado onde mora: ")
+        })
+
+        input()  
+
+def verificarcadastro() -> None:
+    if len(data) != 0:
         print(sorted(data))
-        print("Qual Cadastro deseja ver")
-        nome = input()
-        if nome in sorted(data):
-            for item in data[nome]:
-                print("Nome: ", nome)
+        name = input("Qual Cadastro deseja ver\n")
+        if name in sorted(data):
+            for item in data[name]:
+                print("Nome: ", name)
                 print("Idade :", item['idade'])
                 print("Cidade :", item['cidade'])
                 print("Rua :", item['rua'])
                 print("Numero :", item['numero'])
-                print("Cep :", item['cep'])
+                print("CEP :", item['cep'])
                 print("Sexo :", item['sexo'])
-                print("Email :", item['Email'])
-                print("Cpf :", item['Cpf'])
-                print("Estado :", item['Estado'])
-                brea = input()
+                print("Email :", item['email'])
+                print("CPF :", item['cpf'])
+                print("Estado :", item['estado'])
+                
+                input()
         else:
-            print("Não existe o cadastro ",nome)
-            brea = input()
+            print("Não existe o cadastro ", name)
+
+            input()
     else:
         print("Não há cadastros salvos")
-        brea = input()
-def excluirCadastro():
-    i = len(data)
-    if i != 0:
+
+        input()
+    
+def excluirCadastro() -> None:
+    if len(data) != 0:
         print(sorted(data))
-        indice = input("Nome do Cadastro que deseja excluir:")
-        if indice in data:
-            del data[indice]
+        index = input("Nome do Cadastro que deseja excluir:")
+        if index in data:
+            del data[index]
             print("Cadastro excluido")
         else:
-            print("Cadastro ",indice," não existe")
+            print(f"Cadastro {index} não existe")
     else:
         print("Não há cadastros para excluir")
+
+#main
 try:
-    with open("data.json", "r" ) as load:
-        data = json.load(load)
-except Exception:
+    with open(Path.join(Path.dirname(__file__), "data.json"), "r" ) as loadData:
+        data = json.load(loadData)
+except Exception as e:
     data = {}
-    i = 0
+    print(e)
+
+os.system("cls")
+
 while True:
-    i = len(data)
-    opcao = exibirMenu()
-    if opcao == "4":
-        break
-    elif opcao == "3": 
-        verificarcadastro()
-    elif opcao == "1":
-        inserircadastro()
-    elif opcao == "2":
-        excluirCadastro()
-    else:
-        print("--------Erro--------")
-with open("data.json","w") as cadastrosalvar:
-    json.dump(data, cadastrosalvar)
+    exibirMenu()
+    match input("Ecolha uma opcao:"):
+        case "1":
+            inserircadastro()
+        case "2":
+            excluirCadastro()
+        case "3":
+            verificarcadastro()
+        case "4":
+            break
+        case _:
+            print("--------Erro--------")
 
-
+try:
+    with open(Path.join(Path.dirname(__file__), "data.json"),"w") as saveData:
+        json.dump(data, saveData)
+except Exception as e:
+    print(e)
